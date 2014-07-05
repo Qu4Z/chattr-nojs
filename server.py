@@ -43,7 +43,7 @@ def pub():
 def sub():
 	# if there are already new messages don't do this
 	the_msg = queue[-1]
-	response.add_header("Access-Control-Allow-Origin", "http://localhost:9090")
+	#response.add_header("Access-Control-Allow-Origin", "http://localhost:9090")
 	if the_msg["event"].wait(25):
 		return {"msg": the_msg["msg"], "colour": the_msg["colour"]}
 	return {}

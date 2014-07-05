@@ -6,7 +6,7 @@
 	<script type="text/javascript">
 		function getMessage() {
 			var xmlhttp = new XMLHttpRequest();
-			xmlhttp.open("GET", "http://chatserver:9090/room", true);
+			xmlhttp.open("GET", "/room", true);
 			xmlhttp.onreadystatechange = function() {
 				if (xmlhttp.readyState != 4) 
 					return;
