@@ -1,5 +1,6 @@
 #!/usr/bin/env python2
 
+import colorsys
 import time
 import random
 from gevent import monkey; monkey.patch_all()
@@ -15,11 +16,17 @@ def send_message(msg, colour):
 	queue[-2]["colour"] = colour
 	queue[-2]["event"].set()
 
-def next_colour():
-	r = lambda: random.randint(50, 200)
-	return '#%02X%02X%02X' % (r(),r(),r())
-
 queue = [create_message()]
+
+current_colour = (0.2, 0.1)
+def next_colour():
+	global current_colour
+	(h, v) = current_colour
+	h += 0.38194
+	v += (1.0 - v) * 0.02
+	rgb = colorsys.hsv_to_rgb(h, 1, 1.0 - v)
+	current_colour = (h, v)
+	return '#%02X%02X%02X' % tuple([ int(quant * 256) for quant in rgb ])
 
 @route('/')
 def home():
@@ -38,6 +45,16 @@ def pub():
 	colour = get_colour(request, response)
 	send_message(message, colour)
 	return "OK"
+
+#@route("/colour-chart")
+#def col():
+#	global h, v
+#	h = float(request.params.get('new_h'))
+#	v = 0.1
+#	output = ""
+#	for i in xrange(30):
+#	  output += "<div style='background-color:" + next_colour() + ";min-width=400px;min-height=30px'>&nbsp;</div>"
+#	return output
 
 @route("/room")
 def sub():
