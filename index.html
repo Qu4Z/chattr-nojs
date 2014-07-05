@@ -6,7 +6,7 @@
 	<script type="text/javascript">
 		function getMessage() {
 			var xmlhttp = new XMLHttpRequest();
-			xmlhttp.open("GET", "/room", true);
+			xmlhttp.open("GET", "room", true);
 			xmlhttp.onreadystatechange = function() {
 				if (xmlhttp.readyState != 4) 
 					return;
@@ -26,7 +26,7 @@
 			}
 
 			var xmlhttp = new XMLHttpRequest();
-			xmlhttp.open("POST", "/room", true);
+			xmlhttp.open("POST", "room", true);
 			xmlhttp.send("message=" + encodeURIComponent(msg));
 			return false;
 		}
