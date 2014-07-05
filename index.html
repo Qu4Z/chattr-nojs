@@ -1,0 +1,54 @@
+<!doctype html5>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Chat stuff</title>
+	<script type="text/javascript">
+		function getMessage() {
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.open("GET", "http://chatserver:9090/room", true);
+			xmlhttp.onreadystatechange = function() {
+				if (xmlhttp.readyState != 4) 
+					return;
+				getMessage();
+				var result = JSON.parse(xmlhttp.responseText);
+				if (result.hasOwnProperty('msg'))
+					addMessage(result.colour, result.msg);
+			}
+			xmlhttp.send();
+		}
+		function sendMessage() {
+			var msgBox = document.getElementById("message");
+			var msg = msgBox.value;
+			msgBox.value = "";
+			if (msg == "") {
+				return false;
+			}
+
+			var xmlhttp = new XMLHttpRequest();
+			xmlhttp.open("POST", "/room", true);
+			xmlhttp.send("message=" + encodeURIComponent(msg));
+			return false;
+		}
+
+		function addMessage(colour, msg) {
+			var log = document.getElementById("chatlog");
+			var line = document.createElement("div");
+			line.innerHTML = "<span style=\"color:" + colour + "\">" + msg + "</span>";
+			log.appendChild(line);
+			log.scrollTop = log.scrollHeight;
+		}
+	</script>
+</head>
+<body>
+	<noscript>JavaScript is needed for this application to work.</noscript>
+	<div id="chatlog" style="height:400px;width:600px;overflow-y:scroll;">
+	</div>
+	<form onsubmit="sendMessage(); return false;">
+		<input type="text" name="message" id="message"/>
+		<input type="submit" name="send" value="Send"/>
+	</form>
+
+	<script type="text/javascript">getMessage();</script>
+</body>
+</html>
