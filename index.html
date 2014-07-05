@@ -8,9 +8,14 @@
 			var xmlhttp = new XMLHttpRequest();
 			xmlhttp.open("GET", "room", true);
 			xmlhttp.onreadystatechange = function() {
-				if (xmlhttp.readyState != 4) 
+				if (xmlhttp.readyState != 4)
 					return;
-				getMessage();
+
+				if (xmlhttp.status == 200)
+					getMessage();
+				else 
+					setTimeout(getMessage, 15 * 1000);
+
 				var result = JSON.parse(xmlhttp.responseText);
 				if (result.hasOwnProperty('msg'))
 					addMessage(result.colour, result.msg);
