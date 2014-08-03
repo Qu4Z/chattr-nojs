@@ -1,7 +1,63 @@
-<!doctype html5>
+<!DOCTYPE html>
 <html>
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<style>
+		body {
+			font: 90%/1.4 Verdana, Arial, Helvetica, sans-serif;
+			background-color: #000;
+			margin: 15px;
+			min-width: 100px;
+		}
+		
+		h1 {
+			color: #888;
+			padding-top: 12px;
+		}
+		
+		form { position: relative; }
+
+		input {
+			margin: 10px 0px;
+			color: #888;
+			padding: 3px 3px;
+			background-color: #111;
+			border: 1px solid #444;
+		}
+		
+		.header {
+			margin-top: 20px;
+			padding: 0px 0px 10px 0px;
+		}
+		
+		#icon {
+			float: left;
+			margin-left: 10px;
+			margin-right: 30px;
+		}
+
+		#message {
+			position: absolute;
+			padding-right: 90px;
+			width: 100%;
+		}
+
+		#sendBtn {
+			position: absolute;
+			width: 80px;
+			right: 0px;
+		}
+
+		#chatlog {
+			min-height: 200px;
+			width: 100%;
+			overflow-y:hidden;
+			background-color: #111;
+			border: 1px solid #444;
+		}
+	</style>
+	
 	<title>Chat stuff</title>
 	<script type="text/javascript">
 		function getMessage() {
@@ -44,16 +100,18 @@
 			log.scrollTop = log.scrollHeight;
 		}
 	</script>
-</head>
+    </head>
 <body>
-	<noscript>JavaScript is needed for this application to work.</noscript>
-	<div id="chatlog" style="height:400px;width:600px;overflow-y:scroll;">
+	<div class="header">
+            <div id="icon"><img src="icon.jpg" width="64" height="64" alt="greywolf"/></div>
+            <h1>Chat</h1>
 	</div>
+	<noscript>JavaScript is needed for this application to work.</noscript>
+	<div id="chatlog"></div>
 	<form onsubmit="sendMessage(); return false;">
-		<input type="text" name="message" id="message"/>
-		<input type="submit" name="send" value="Send"/>
+            <input id="message" type="text" name="message">
+            <input id="sendBtn" type="submit" name="send" value="send">
 	</form>
 
 	<script type="text/javascript">getMessage();</script>
-</body>
-</html>
+</body></html>
