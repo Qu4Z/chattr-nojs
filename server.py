@@ -30,7 +30,7 @@ def next_colour():
 
 @route('/')
 def home():
-	return bottle.static_file("index.html", root=".")
+	return bottle.static_file("index.html", root="static/")
 
 def get_colour(req, resp):
 	colour = req.cookies.get("Colour")
@@ -46,6 +46,10 @@ def pub():
 	send_message(message, colour)
 	return "OK"
 
+@route("/<filename>")
+def serve_static(filename):
+    return bottle.static_file(filename, root="static/")
+
 #@route("/colour-chart")
 #def col():
 #	global h, v
@@ -60,7 +64,7 @@ def pub():
 def sub():
 	# if there are already new messages don't do this
 	the_msg = queue[-1]
-	#response.add_header("Access-Control-Allow-Origin", "http://localhost:9090")
+	response.add_header("Cache-Control", "public, max-age=0, no-cache")
 	if the_msg["event"].wait(25):
 		return {"msg": the_msg["msg"], "colour": the_msg["colour"]}
 	return {}
