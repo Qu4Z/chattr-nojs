@@ -107,7 +107,12 @@
 			var line = document.createElement("div");
 			line.innerHTML = "<span style=\"color:" + colour + "\">" + msg + "</span>";
 			log.appendChild(line);
-			log.scrollTop = log.scrollHeight;
+
+            var input = document.getElementById("message");
+
+            if (window.scrollTop() >= document.height() - window.height() - 10) {
+                input.scrollIntoView();
+            }
 		}
 	</script>
     </head>
