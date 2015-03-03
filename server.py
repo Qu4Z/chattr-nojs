@@ -19,7 +19,7 @@ def send_message(msg, colour):
 	queue[-2]["msg"] = msg
 	queue[-2]["colour"] = colour
 	queue[-2]["event"].set()
-	if (len(queue) > 20):
+	if (len(queue) > 10):
 		queue.pop(0)
 
 queue = [create_message()]
