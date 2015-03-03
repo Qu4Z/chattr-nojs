@@ -70,21 +70,30 @@
 	
 	<title>Chat</title>
 	<script type="text/javascript">
+		var latestReceivedMessage = 0; 
 		function getMessage() {
 			var xmlhttp = new XMLHttpRequest();
-			xmlhttp.open("GET", "room", true);
+			xmlhttp.open("GET", "room?since=" + latestReceivedMessage, true);
 			xmlhttp.onreadystatechange = function() {
 				if (xmlhttp.readyState != 4)
 					return;
+
+				var result = JSON.parse(xmlhttp.responseText);
+				// Needed because returning a raw array is bad, apparently.
+				if (result.hasOwnProperty("msgs")) {
+					result = result["msgs"];
+				}
+				for (var i = 0; i < result.length; i++) {
+					var msg = result[i];
+					addMessage(msg.colour, msg.msg);
+					latestReceivedMessage = msg.id;
+				}
 
 				if (xmlhttp.status == 200)
 					getMessage();
 				else 
 					setTimeout(getMessage, 15 * 1000);
 
-				var result = JSON.parse(xmlhttp.responseText);
-				if (result.hasOwnProperty('msg'))
-					addMessage(result.colour, result.msg);
 			}
 			xmlhttp.send();
 		}

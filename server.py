@@ -8,13 +8,19 @@ from threading import Event
 import bottle
 from bottle import route, request, response
 
+latest_message_id = 0
 def create_message():
-	return { "msg": "", "colour": "", "event": Event() }
+	global latest_message_id
+	latest_message_id += 1
+	return { "msg": "", "colour": "", "event": Event(), "id": latest_message_id }
+
 def send_message(msg, colour):
 	queue.append(create_message())
 	queue[-2]["msg"] = msg
 	queue[-2]["colour"] = colour
 	queue[-2]["event"].set()
+	if (len(queue) > 20):
+		queue.pop(0)
 
 queue = [create_message()]
 
@@ -50,25 +56,26 @@ def pub():
 def serve_static(filename):
     return bottle.static_file(filename, root="static/")
 
-#@route("/colour-chart")
-#def col():
-#	global h, v
-#	h = float(request.params.get('new_h'))
-#	v = 0.1
-#	output = ""
-#	for i in xrange(30):
-#	  output += "<div style='background-color:" + next_colour() + ";min-width=400px;min-height=30px'>&nbsp;</div>"
-#	return output
+def format_message(msg):
+	return {"msg": msg["msg"], "colour": msg["colour"], "id": msg["id"]}
+
+def all_messages_since(when):
+	return {"msgs": [format_message(msg) for msg in queue[:-1] if msg["id"] > when]}
 
 @route("/room")
 def sub():
-	# if there are already new messages don't do this
+	try:
+		lastReceivedMessage = int(request.query['since'])
+	except KeyError, ValueError:
+		lastReceivedMessage = None # Populate from GET parameter
 	the_msg = queue[-1]
+	if not lastReceivedMessage or the_msg["id"] - 1 != lastReceivedMessage:
+	  return all_messages_since(lastReceivedMessage)
 	response.add_header("Cache-Control", "public, max-age=0, no-cache")
 	if the_msg["event"].wait(25):
-		return {"msg": the_msg["msg"], "colour": the_msg["colour"]}
-	return {}
+		return {"msgs":[format_message(the_msg)]}
+	return {"msgs":[]}
 
 if __name__ == "__main__":
-	bottle.run(port=9090, server="gevent")	
+	bottle.run(port=9091, server="gevent")	
 	
