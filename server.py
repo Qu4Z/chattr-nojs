@@ -10,7 +10,7 @@ from collections import defaultdict
 import bottle
 from bottle import route, request, response
 
-latest_message_id = 0
+latest_message_id = defaultdict(lambda: 0)
 def create_message():
     global latest_message_id
     latest_message_id += 1
