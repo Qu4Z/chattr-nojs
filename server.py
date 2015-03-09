@@ -8,7 +8,7 @@ from threading import Event
 from collections import defaultdict
 
 import bottle
-from bottle import route, request, response
+from bottle import route, request, response, redirect
 
 latest_message_id = 0
 def create_message():
@@ -36,6 +36,10 @@ def next_colour():
 	current_colour = (h, v)
 	return '#%02X%02X%02X' % tuple([ int(quant * 256) for quant in rgb ])
 
+@route('/r/<room>')
+def trailingSlash(room):
+	redirect("/r/{}/".format(room))
+
 @route('/r/<room>/')
 def home(room):
 	return bottle.static_file("index.html", root="static/")
@@ -49,7 +53,6 @@ def get_colour(req, resp):
 
 @route("/r/<room>/room", method="POST")
 def pub(room):
-	print room
 	message = request.params.get('message')
 	colour = get_colour(request, response)
 	send_message(message, colour, room)
