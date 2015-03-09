@@ -73,7 +73,7 @@ def sub(room):
 		lastReceivedMessage = None # Populate from GET parameter
 	the_msg = queue[room][-1]
 	if not lastReceivedMessage or the_msg["id"] - 1 != lastReceivedMessage:
-	  return all_messages_since(lastReceivedMessage, room)
+		return all_messages_since(lastReceivedMessage, room)
 	response.add_header("Cache-Control", "public, max-age=0, no-cache")
 	if the_msg["event"].wait(25):
 		return {"msgs":[format_message(the_msg)]}
