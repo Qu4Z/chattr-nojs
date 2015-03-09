@@ -36,13 +36,17 @@ def next_colour():
 	current_colour = (h, v)
 	return '#%02X%02X%02X' % tuple([ int(quant * 256) for quant in rgb ])
 
-@route('/r/<room>')
-def trailingSlash(room):
-	redirect("/r/{}/".format(room))
+@route('/')
+def home():
+	redirect('/r/-/')
 
 @route('/r/<room>/')
-def home(room):
+def room_home(room):
 	return bottle.static_file("index.html", root="static/")
+
+@route('/r/<room>')
+def trailing_slashfix(room):
+	redirect("/r/{}/".format(room))
 
 def get_colour(req, resp):
 	colour = req.cookies.get("Colour")
