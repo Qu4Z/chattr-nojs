@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta name="viewport" content="width=device-width, user-scalable=no">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no">
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<style>
 		body {
@@ -17,35 +17,38 @@
 		input {
 			color: #f2f2f2;
 			background-color: #222;
-            font-family: inherit;
+			font-family: inherit;
 
-            border: 0px;
+			border: 0px;
 			border-top: 0x solid #444;
 
-            outline-width: 0px;
+			outline-width: 0px;
 		}
 
 		pre {
 			font: 80%/1.4 Verdana, Arial, Helvetica, sans-serif;
+			font-size:1em;
+			margin-top: 0px;
+			margin-bottom: 0px;
 			white-space: normal;
 			unicode-bidi: normal;
 		}
 
-        ::-webkit-input-placeholder { color:#888; }
-        ::-moz-placeholder { color:#888; } /* firefox 19+ */
-        :-ms-input-placeholder { color:#888; } /* ie */
-        input:-moz-placeholder { color:#888; }
+		::-webkit-input-placeholder { color:#888; }
+		::-moz-placeholder { color:#888; } /* firefox 19+ */
+		:-ms-input-placeholder { color:#888; } /* ie */
+		input:-moz-placeholder { color:#888; }
 		
 		.header {
 			margin-top: 20px;
-            margin-bottom: 20px;
+			margin-bottom: 20px;
 		}
 
-        #title {
-            display: inline-block;
-            font-size: xx-large;
+		#title {
+			display: inline-block;
+			font-size: xx-large;
 			color: #f5f5f5;
-        }
+		}
 		
 		#icon {
 			margin-left: 10px;
@@ -53,12 +56,12 @@
 		}
 
 		#message {
-            width: 100%;
+			width: 100%;
 		}
 
 		#sendBtn {
-            display: none;
-            width: 0%;
+			display: none;
+			width: 0%;
 			right: 0px;
 		}
 
@@ -67,10 +70,10 @@
 			/*overflow-y: hidden;*/
 		}
 
-        #wrapper {
-            width: 100%;
-            margin: auto;
-        }
+		#wrapper {
+			width: 100%;
+			margin: auto;
+		}
 
 	</style>
 	
@@ -123,26 +126,26 @@
 			line.innerHTML = "<span style=\"color:" + colour + "\">" + msg + "</span>";
 			log.appendChild(line);
 
-            var input = document.getElementById("message");
+			var input = document.getElementById("message");
 
-            input.scrollIntoView();
+			input.scrollIntoView();
 		}
 	</script>
-    </head>
+	</head>
 <body>
-        <div id="wrapper">
-            <div class="header">
-                <span id="title">Chat</span>
-            </div>
-            <noscript>JavaScript is needed for this application to work.</noscript>
+		<div id="wrapper">
+			<div class="header">
+				<span id="title">Chat</span>
+			</div>
+			<noscript>JavaScript is needed for this application to work.</noscript>
 
-            <div id="chatlog"></div>
+			<div id="chatlog"></div>
 
-            <form onsubmit="sendMessage(); return false;">
-                <input id="message" type="text" name="message" placeholder="Send a message..." autocomplete="off">
-                <input id="sendBtn" type="submit" name="send" value="send">
-            </form>
-        </div>
+			<form onsubmit="sendMessage(); return false;">
+				<input id="message" type="text" name="message" placeholder="Send a message..." autocomplete="off">
+				<input id="sendBtn" type="submit" name="send" value="send">
+			</form>
+		</div>
 
 	<script type="text/javascript">getMessage();</script>
 </body></html>
