@@ -29,7 +29,7 @@ queue = defaultdict(lambda: [create_message()])
 current_colour = (0.2, 0.1)
 def next_colour():
 	global current_colour
-	(h, v) = current_colour
+	(H, v) = current_colour
 	h += 0.38194
 	v += (1.0 - v) * 0.02
 	rgb = colorsys.hsv_to_rgb(h, 1, 1.0 - v)
@@ -62,10 +62,6 @@ def pub(room):
 	send_message(message, colour, room)
 	return "OK"
 
-@route("/<filename>")
-def serve_static(filename):
-	return bottle.static_file(filename, root="static/")
-
 def format_message(msg):
 	return {"msg": msg["msg"], "colour": msg["colour"], "id": msg["id"]}
 
@@ -77,7 +73,7 @@ def sub(room):
 	try:
 		lastReceivedMessage = int(request.query['since'])
 	except KeyError, ValueError:
-		lastReceivedMessage = None # Populate from GET parameter
+		lastReceivedMessage = None
 	the_msg = queue[room][-1]
 	if not lastReceivedMessage or the_msg["id"] - 1 != lastReceivedMessage:
 		return all_messages_since(lastReceivedMessage, room)
