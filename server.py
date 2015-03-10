@@ -52,7 +52,7 @@ def get_colour(req, resp):
 	colour = req.cookies.get("Colour")
 	if not colour:
 		colour = next_colour()
-		resp.set_cookie("Colour", colour)
+		resp.set_cookie("Colour", colour, httponly=True)
 	return colour
 
 @route("/r/<room>/room", method="POST")
