@@ -29,7 +29,7 @@ queue = defaultdict(lambda: [create_message()])
 current_colour = (0.2, 0.1)
 def next_colour():
 	global current_colour
-	(H, v) = current_colour
+	(h, v) = current_colour
 	h += 0.38194
 	v += (1.0 - v) * 0.02
 	rgb = colorsys.hsv_to_rgb(h, 1, 1.0 - v)
