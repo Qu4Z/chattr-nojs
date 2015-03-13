@@ -58,6 +58,7 @@ def get_colour(req, resp):
 @route("/r/<room>/room", method="POST")
 def pub(room):
 	message = request.params.get('message')
+        message = message[:1000] if message else ""
 	colour = get_colour(request, response)
 	send_message(message, colour, room)
 	return "OK"
@@ -74,10 +75,11 @@ def sub(room):
 		lastReceivedMessage = int(request.query['since'])
 	except KeyError, ValueError:
 		lastReceivedMessage = None
+	response.add_header("Cache-Control", "public, max-age=0, no-cache")
+
 	the_msg = queue[room][-1]
 	if not lastReceivedMessage or the_msg["id"] - 1 != lastReceivedMessage:
 		return all_messages_since(lastReceivedMessage, room)
-	response.add_header("Cache-Control", "public, max-age=0, no-cache")
 	if the_msg["event"].wait(25):
 		return {"msgs":[format_message(the_msg)]}
 	return {"msgs":[]}
