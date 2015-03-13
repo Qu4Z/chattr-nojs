@@ -1,0 +1,6 @@
+# We don't need no
+# indexation
+# We don't need no
+# Cache-Control
+User-Agent: *
+Disallow: /
