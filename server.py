@@ -8,7 +8,7 @@ from threading import Event
 from collections import defaultdict
 
 import bottle
-from bottle import route, request, response, redirect
+from bottle import route, request, response, redirect, template
 
 latest_message_id = 0
 def create_message():
@@ -40,13 +40,15 @@ def next_colour():
 def home():
 	redirect('/r/-/')
 
-@route('/r/<room>/')
-def room_home(room):
-	return bottle.static_file("index.html", root="static/")
-
 @route('/r/<room>')
 def trailing_slashfix(room):
 	redirect("/r/{}/".format(room))
+
+@route('/r/<room>/')
+def room_home(room):
+	bottle.TEMPLATE_PATH = ["static/"]
+	return template("index.html", room=room)
+	#return bottle.static_file("index.html", root="static/")
 
 def get_colour(req, resp):
 	colour = req.cookies.get("Colour")
