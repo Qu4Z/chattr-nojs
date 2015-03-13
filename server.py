@@ -10,6 +10,8 @@ from collections import defaultdict
 import bottle
 from bottle import route, request, response, redirect, template
 
+bottle.TEMPLATE_PATH = ["static/"]
+
 latest_message_id = 0
 def create_message():
 	global latest_message_id
@@ -36,6 +38,10 @@ def next_colour():
 	current_colour = (h, v)
 	return '#%02X%02X%02X' % tuple([ int(quant * 256) for quant in rgb ])
 
+@route('/robots.txt')
+def serve_robots():
+	return bottle.static_file('robots.txt', root='static/')
+
 @route('/')
 def home():
 	redirect('/r/-/')
@@ -46,9 +52,7 @@ def trailing_slashfix(room):
 
 @route('/r/<room>/')
 def room_home(room):
-	bottle.TEMPLATE_PATH = ["static/"]
 	return template("index.html", room=room)
-	#return bottle.static_file("index.html", root="static/")
 
 def get_colour(req, resp):
 	colour = req.cookies.get("Colour")
