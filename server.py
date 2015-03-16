@@ -42,15 +42,19 @@ def next_colour():
 def serve_robots():
 	return bottle.static_file('robots.txt', root='static/')
 
+@route('/favicon.ico')
+def serve_facicon():
+	return bottle.static_file('favicon.ico', root='static/')
+
 @route('/')
 def home():
-	redirect('/r/-/')
+	redirect('/-/')
 
-@route('/r/<room>')
+@route('/<room>')
 def trailing_slashfix(room):
-	redirect("/r/{}/".format(room))
+	redirect("/{}/".format(room))
 
-@route('/r/<room>/')
+@route('/<room>/')
 def room_home(room):
 	return template("index.html", room=room)
 
@@ -58,10 +62,10 @@ def get_colour(req, resp):
 	colour = req.cookies.get("Colour")
 	if not colour:
 		colour = next_colour()
-		resp.set_cookie("Colour", colour, path="/r/", httponly=True)
+		resp.set_cookie("Colour", colour, path="/", httponly=True)
 	return colour
 
-@route("/r/<room>/room", method="POST")
+@route("/<room>/room", method="POST")
 def pub(room):
 	message = request.params.get('message')
         message = message[:1000] if message else ""
@@ -75,7 +79,7 @@ def format_message(msg):
 def all_messages_since(when, room):
 	return {"msgs": [format_message(msg) for msg in queue[room][:-1] if msg["id"] > when]}
 
-@route("/r/<room>/room")
+@route("/<room>/room")
 def sub(room):
 	try:
 		lastReceivedMessage = int(request.query['since'])
