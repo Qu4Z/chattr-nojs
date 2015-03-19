@@ -6,28 +6,18 @@
 	<style>
 		body {
 			font: 80%/1.4 Verdana, Arial, Helvetica, sans-serif;
+			color: #f5f5f5;
 			background-color: #000;
 			margin: 15px;
-			min-width: 100px;
 		}
 		
-		form { position: relative; }
-
 		input {
 			color: #f2f2f2;
 			background-color: #222;
 			font-family: inherit;
 
 			border: 0px;
-			border-top: 0x solid #444;
-
 			outline-width: 0px;
-		}
-
-		pre {
-			font-size:1.4em;
-			margin-top: 0px;
-			margin-bottom: 0px;
 		}
 
 		::-webkit-input-placeholder { color:#888; }
@@ -35,42 +25,19 @@
 		:-ms-input-placeholder { color:#888; } /* ie */
 		input:-moz-placeholder { color:#888; }
 		
-		.header {
-			margin-top: 5px;
-			margin-bottom: 5px;
-		}
-
-		#title {
-			display: inline-block;
+		h1 {
+			font-weight: normal;
 			font-size: large;
-			color: #f5f5f5;
-		}
-		
-		#icon {
-			margin-left: 10px;
-			margin-right: 30px;
 		}
 
 		#message {
 			width: 100%;
 		}
 
-		#sendBtn {
-			display: none;
-			width: 0%;
-			right: 0px;
+		pre {
+			font-size:1.4em;
+			margin: 0px auto;
 		}
-
-		#chatlog {
-			//min-height: 1200px;
-			//overflow-y: hidden;
-		}
-
-		#wrapper {
-			width: 100%;
-			margin: auto;
-		}
-
 	</style>
 	
 	<title>Chat</title>
@@ -131,16 +98,14 @@
 	</head>
 <body>
 		<div id="wrapper">
-			<div class="header">
-				<span id="title">room: {{room}}</span>
-			</div>
+			<h1>room: {{room}}</h1>
 			<noscript>JavaScript is needed for this application to work.</noscript>
 
 			<div id="chatlog"></div>
 
 			<form onsubmit="sendMessage(); return false;">
 				<input id="message" type="text" name="message" placeholder="Send a message..." autocomplete="off">
-				<input id="sendBtn" type="submit" name="send" value="send">
+				<input id="sendBtn" type="submit" name="send" value="send" style="display:none;">
 			</form>
 		</div>
 
