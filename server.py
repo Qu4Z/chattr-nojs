@@ -4,7 +4,7 @@ import colorsys
 import time
 import random
 from gevent import monkey; monkey.patch_all()
-from threading import Event
+from threading import Event, Timer
 from collections import defaultdict
 
 import bottle
@@ -16,17 +16,23 @@ latest_message_id = 0
 def create_message():
 	global latest_message_id
 	latest_message_id += 1
-	return { "msg": "", "colour": "", "event": Event(), "id": latest_message_id }
+	return { "msg": "", "colour": "", "event": Event(), "id": latest_message_id}
 
 def send_message(msg, colour, room):
-	queue[room].append(create_message())
-	queue[room][-2]["msg"] = msg
-	queue[room][-2]["colour"] = colour
-	queue[room][-2]["event"].set()
-	if (len(queue[room]) > 20):
-		queue[room].pop(0)
+	queue[room]["msgs"].append(create_message())
+	queue[room]["msgs"][-2]["msg"] = msg
+	queue[room]["msgs"][-2]["colour"] = colour
+	queue[room]["msgs"][-2]["event"].set()
+	if (len(queue[room]["msgs"]) > 20):
+		queue[room]["msgs"].pop(0)
+	queue[room]["last"] = int(time.time())
 
-queue = defaultdict(lambda: [create_message()])
+queue = defaultdict(lambda: {"msgs": [create_message()], "last": 0})
+
+def purge_dead_rooms(every=43200, ttl=259200): #43200s = 12h, 259200s = 72h = 3d
+	for room in list(room for room in queue if queue[room]["last"] != 0 and queue[room]["last"] < int(time.time()) - ttl):
+		del queue[room]
+	Timer(every, purge_dead_rooms).start()
 
 current_colour = (0.2, 0.1)
 def next_colour():
@@ -77,7 +83,7 @@ def format_message(msg):
 	return {"msg": msg["msg"], "colour": msg["colour"], "id": msg["id"]}
 
 def all_messages_since(when, room):
-	return {"msgs": [format_message(msg) for msg in queue[room][:-1] if msg["id"] > when]}
+	return {"msgs": [format_message(msg) for msg in queue[room]["msgs"][:-1] if msg["id"] > when]}
 
 @route("/<room>/room")
 def sub(room):
@@ -87,13 +93,14 @@ def sub(room):
 		lastReceivedMessage = None
 	response.add_header("Cache-Control", "public, max-age=0, no-cache")
 
-	the_msg = queue[room][-1]
+	the_msg = queue[room]["msgs"][-1]
 	if not lastReceivedMessage or the_msg["id"] - 1 != lastReceivedMessage:
-		if len(queue[room]) > 1: return all_messages_since(lastReceivedMessage, room)
+		if len(queue[room]["msgs"]) > 1: return all_messages_since(lastReceivedMessage, room)
 	if the_msg["event"].wait(25):
 		return {"msgs":[format_message(the_msg)]}
 	return {"msgs":[]}
 
 if __name__ == "__main__":
+	purge_dead_rooms()
 	bottle.run(port=9092, server="gevent")
 
