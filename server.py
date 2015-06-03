@@ -26,7 +26,7 @@ def send_message(msg, colour, room):
 
 queue = defaultdict(lambda: {"msgs": [create_message()], "last_msg_time": None})
 
-def purge_dead_rooms(every=1, ttl=2): #43200s = 12h, 259200s = 72h = 3d
+def purge_dead_rooms(every=43200, ttl=259200): #43200s = 12h, 259200s = 72h = 3d
 	for room in [room for room in queue if queue[room]["last_msg_time"] and queue[room]["last_msg_time"] < datetime.datetime.now() - datetime.timedelta(seconds=ttl)]:
 		del queue[room]
 	Timer(every, purge_dead_rooms).start()
