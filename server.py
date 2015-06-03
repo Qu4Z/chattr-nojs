@@ -1,11 +1,10 @@
 #!/usr/bin/env python2
 
 import colorsys
-import time
 import random
-from gevent import monkey; monkey.patch_all()
-from threading import Event
 import datetime
+from gevent import monkey; monkey.patch_all()
+from threading import Event, Timer
 
 from bottle import run, route, request, response, redirect, static_file
 
@@ -13,7 +12,7 @@ latest_message_id = 0
 def create_message():
 	global latest_message_id
 	latest_message_id += 1
-	return { "msg": "", "colour": "", "event": Event(), "id": latest_message_id }
+	return { "msg": "", "colour": "", "event": Event(), "id": latest_message_id}
 
 def send_message(msg, colour, room):
 	queue[room]["msgs"].append(create_message())
@@ -22,8 +21,14 @@ def send_message(msg, colour, room):
 	queue[room]["msgs"][-2]["event"].set()
 	if (len(queue[room]["msgs"]) > 20):
 		queue[room]["msgs"].pop(0)
+	queue[room]["last_msg_time"] = datetime.datetime.now()
 
 queue = {}
+
+def purge_dead_rooms(every=43200, ttl=259200): #43200s = 12h, 259200s = 72h = 3d
+	for room in list(room for room in queue if queue[room]["last_msg_time"] and queue[room]["last_msg_time"] < datetime.datetime.now() - datetime.timedelta(seconds=ttl)):
+		del queue[room]
+	Timer(every, purge_dead_rooms).start()
 
 current_colour = (0.2, 0.1)
 def next_colour():
@@ -78,17 +83,14 @@ def all_messages_since(when, room):
 
 @route("/<room>/room")
 def sub(room):
-	if room not in queue or queue[room]["last_seen_activity"] < datetime.datetime.now() - datetime.timedelta(hours=24):
-		queue[room] = {"msgs": [create_message()], "last_seen_activity": datetime.datetime.now()}
-
-	queue[room]["last_seen_activity"] = datetime.datetime.now()
+	if room not in queue or queue[room]["last_msg_time"] < datetime.datetime.now() - datetime.timedelta(hours=24):
+		queue[room] = {"msgs": [create_message()], "last_msg_time": None}
 
 	try:
 		lastReceivedMessage = int(request.query['since'])
 	except KeyError, ValueError:
 		lastReceivedMessage = None
 	response.add_header("Cache-Control", "public, max-age=0, no-cache")
-
 
 	the_msg = queue[room]["msgs"][-1]
 	if not lastReceivedMessage or the_msg["id"] - 1 != lastReceivedMessage:
@@ -98,5 +100,5 @@ def sub(room):
 	return {"msgs":[]}
 
 if __name__ == "__main__":
-	run(port=9092, server="gevent")
-
+	purge_dead_rooms()
+	bottle.run(port=9092, server="gevent")
