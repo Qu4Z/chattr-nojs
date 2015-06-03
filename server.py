@@ -31,14 +31,11 @@ def purge_dead_rooms(every=43200, ttl=259200): #43200s = 12h, 259200s = 72h = 3d
 		del queue[room]
 	Timer(every, purge_dead_rooms).start()
 
-current_colour = (0.2, 1.0)
+current_colour = 0.2
 def next_colour():
 	global current_colour
-	(h, v) = current_colour
-	h += 0.38194
-	v *= 0.98
-	rgb = colorsys.hsv_to_rgb(h, 1, v)
-	current_colour = (h, v)
+	current_colour += 0.38194
+	rgb = colorsys.hsv_to_rgb(current_colour, 1, 0.85)
 	return '#%02X%02X%02X' % tuple([ int(quant * 256) for quant in rgb ])
 
 @route('/robots.txt')
