@@ -5,6 +5,7 @@ import random
 import datetime
 from gevent import monkey; monkey.patch_all()
 from threading import Event, Timer
+from collections import defaultdict
 
 from bottle import run, route, request, response, redirect, static_file
 
@@ -12,7 +13,7 @@ latest_message_id = 0
 def create_message():
 	global latest_message_id
 	latest_message_id += 1
-	return { "msg": "", "colour": "", "event": Event(), "id": latest_message_id}
+	return { "msg": "", "colour": "", "event": Event(), "id": latest_message_id }
 
 def send_message(msg, colour, room):
 	queue[room]["msgs"].append(create_message())
@@ -23,10 +24,10 @@ def send_message(msg, colour, room):
 		queue[room]["msgs"].pop(0)
 	queue[room]["last_msg_time"] = datetime.datetime.now()
 
-queue = {}
+queue = defaultdict(lambda: {"msgs": [create_message()], "last_msg_time": None})
 
-def purge_dead_rooms(every=43200, ttl=259200): #43200s = 12h, 259200s = 72h = 3d
-	for room in list(room for room in queue if queue[room]["last_msg_time"] and queue[room]["last_msg_time"] < datetime.datetime.now() - datetime.timedelta(seconds=ttl)):
+def purge_dead_rooms(every=1, ttl=2): #43200s = 12h, 259200s = 72h = 3d
+	for room in [room for room in queue if queue[room]["last_msg_time"] and queue[room]["last_msg_time"] < datetime.datetime.now() - datetime.timedelta(seconds=ttl)]:
 		del queue[room]
 	Timer(every, purge_dead_rooms).start()
 
@@ -45,7 +46,7 @@ def serve_robots():
 	return static_file('robots.txt', root='static/')
 
 @route('/favicon.ico')
-def serve_facicon():
+def serve_favicon():
 	return static_file('favicon.ico', root='static/')
 
 @route('/')
@@ -70,7 +71,7 @@ def get_colour(req, resp):
 @route("/<room>/room", method="POST")
 def pub(room):
 	message = request.params.get('message')
-        message = message[:1000] if message else ""
+	message = message[:1000] if message else ""
 	colour = get_colour(request, response)
 	send_message(message, colour, room)
 	return "OK"
@@ -83,9 +84,6 @@ def all_messages_since(when, room):
 
 @route("/<room>/room")
 def sub(room):
-	if room not in queue or queue[room]["last_msg_time"] < datetime.datetime.now() - datetime.timedelta(hours=24):
-		queue[room] = {"msgs": [create_message()], "last_msg_time": None}
-
 	try:
 		lastReceivedMessage = int(request.query['since'])
 	except KeyError, ValueError:
@@ -101,4 +99,4 @@ def sub(room):
 
 if __name__ == "__main__":
 	purge_dead_rooms()
-	bottle.run(port=9092, server="gevent")
+	run(port=9092, server="gevent")
