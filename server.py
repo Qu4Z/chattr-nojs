@@ -5,12 +5,9 @@ import time
 import random
 from gevent import monkey; monkey.patch_all()
 from threading import Event
-from collections import defaultdict
+import datetime
 
-import bottle
-from bottle import route, request, response, redirect, template
-
-bottle.TEMPLATE_PATH = ["static/"]
+from bottle import run, route, request, response, redirect, static_file
 
 latest_message_id = 0
 def create_message():
@@ -19,14 +16,14 @@ def create_message():
 	return { "msg": "", "colour": "", "event": Event(), "id": latest_message_id }
 
 def send_message(msg, colour, room):
-	queue[room].append(create_message())
-	queue[room][-2]["msg"] = msg
-	queue[room][-2]["colour"] = colour
-	queue[room][-2]["event"].set()
-	if (len(queue[room]) > 20):
-		queue[room].pop(0)
+	queue[room]["msgs"].append(create_message())
+	queue[room]["msgs"][-2]["msg"] = msg
+	queue[room]["msgs"][-2]["colour"] = colour
+	queue[room]["msgs"][-2]["event"].set()
+	if (len(queue[room]["msgs"]) > 20):
+		queue[room]["msgs"].pop(0)
 
-queue = defaultdict(lambda: [create_message()])
+queue = {}
 
 current_colour = (0.2, 0.1)
 def next_colour():
@@ -40,11 +37,11 @@ def next_colour():
 
 @route('/robots.txt')
 def serve_robots():
-	return bottle.static_file('robots.txt', root='static/')
+	return static_file('robots.txt', root='static/')
 
 @route('/favicon.ico')
 def serve_facicon():
-	return bottle.static_file('favicon.ico', root='static/')
+	return static_file('favicon.ico', root='static/')
 
 @route('/')
 def home():
@@ -56,7 +53,7 @@ def trailing_slashfix(room):
 
 @route('/<room>/')
 def room_home(room):
-	return template("index.html", room=room)
+	return static_file('index.html', root='static/')
 
 def get_colour(req, resp):
 	colour = req.cookies.get("Colour")
@@ -77,23 +74,29 @@ def format_message(msg):
 	return {"msg": msg["msg"], "colour": msg["colour"], "id": msg["id"]}
 
 def all_messages_since(when, room):
-	return {"msgs": [format_message(msg) for msg in queue[room][:-1] if msg["id"] > when]}
+	return {"msgs": [format_message(msg) for msg in queue[room]["msgs"][:-1] if msg["id"] > when]}
 
 @route("/<room>/room")
 def sub(room):
+	if room not in queue or queue[room]["last_seen_activity"] < datetime.datetime.now() - datetime.timedelta(hours=24):
+		queue[room] = {"msgs": [create_message()], "last_seen_activity": datetime.datetime.now()}
+
+	queue[room]["last_seen_activity"] = datetime.datetime.now()
+
 	try:
 		lastReceivedMessage = int(request.query['since'])
 	except KeyError, ValueError:
 		lastReceivedMessage = None
 	response.add_header("Cache-Control", "public, max-age=0, no-cache")
 
-	the_msg = queue[room][-1]
+
+	the_msg = queue[room]["msgs"][-1]
 	if not lastReceivedMessage or the_msg["id"] - 1 != lastReceivedMessage:
-		if len(queue[room]) > 1: return all_messages_since(lastReceivedMessage, room)
+		if len(queue[room]["msgs"]) > 1: return all_messages_since(lastReceivedMessage, room)
 	if the_msg["event"].wait(25):
 		return {"msgs":[format_message(the_msg)]}
 	return {"msgs":[]}
 
 if __name__ == "__main__":
-	bottle.run(port=9092, server="gevent")
+	run(port=9092, server="gevent")
 

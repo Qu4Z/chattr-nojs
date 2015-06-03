@@ -98,8 +98,8 @@
 	</head>
 <body>
 		<div id="wrapper">
-			<h1>room: {{room}}</h1>
-			<noscript>JavaScript is needed for this application to work.</noscript>
+			<h1 id="header">Javascript is needed for this application to work, like, at all</h1>
+			<script type="text/javascript">document.getElementById("header").innerHTML = "room: " + window.location.pathname.split('/')[1];</script>
 
 			<div id="chatlog"></div>
 
