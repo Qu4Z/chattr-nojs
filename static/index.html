@@ -43,6 +43,8 @@
 	<title>Chat</title>
 	<script type="text/javascript">
 		var latestReceivedMessage = 0; 
+		var notified = false;
+
 		function getMessage() {
 			var xmlhttp = new XMLHttpRequest();
 			xmlhttp.open("GET", "room?since=" + latestReceivedMessage, true);
@@ -94,6 +96,22 @@
 
 			if (wasAtBottom)
 				document.getElementById("message").scrollIntoView();
+
+			if (document.visibilityState == "hidden" && !notified) {
+				document.title = "[*] Chat";
+				notified = true;
+			}
+		}
+
+		function init() {
+			document.addEventListener("visibilitychange", function () {
+				if (document.visibilityState == "visible" && notified) {
+					document.title = "Chat";
+					notified = false;
+				}
+			});
+
+			getMessage();
 		}
 	</script>
 	</head>
@@ -110,5 +128,5 @@
 			</form>
 		</div>
 
-	<script type="text/javascript">getMessage();</script>
+	<script type="text/javascript">init();</script>
 </body></html>
