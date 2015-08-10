@@ -42,7 +42,6 @@
 	
 	<title>Chat</title>
 	<script type="text/javascript">
-		navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
 		var latestReceivedMessage = 0; 
 		function getMessage() {
 			var xmlhttp = new XMLHttpRequest();
@@ -70,6 +69,7 @@
 			}
 			xmlhttp.send();
 		}
+
 		function sendMessage() {
 			var msgBox = document.getElementById("message");
 			var msg = msgBox.value;
@@ -84,12 +84,6 @@
 			return false;
 		}
 
-		function notify() {
-			if (!document.hasFocus() && (document.location.indexOf("notify") > -1) {
-				navigator.vibrate(200);;
-			}
-		}
-
 		function addMessage(colour, msg) {
 			var wasAtBottom = window.innerHeight + window.scrollY > document.body.offsetHeight;
 
@@ -97,8 +91,6 @@
 			var line = document.createElement("div");
 			line.innerHTML = "<span style=\"color:" + colour + "\">" + msg + "</span>";
 			log.appendChild(line);
-
-			notify();
 
 			if (wasAtBottom)
 				document.getElementById("message").scrollIntoView();
