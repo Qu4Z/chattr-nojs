@@ -42,8 +42,7 @@
 	
 	<title>Chat</title>
 	<script type="text/javascript">
-        var room = window.location.pathname.split('/')[1] + "@" + window.location.hostname;
-
+		var room = window.location.pathname.split('/')[1] + "@" + window.location.hostname;
 		var latestReceivedMessage = 0; 
 
 		function getMessage() {
@@ -99,16 +98,16 @@
 				document.getElementById("message").scrollIntoView();
 
 			if (document.hidden)
-                document.title = "[*] " + room;
+				document.title = "[*] " + room;
 		}
 
 		function init() {
 			document.addEventListener("visibilitychange", function () {
 				if (!document.hidden)
-                    document.title = room;
+					document.title = room;
 			});
-            
-            document.title = room;
+
+			document.title = room;
 			getMessage();
 		}
 	</script>
@@ -116,9 +115,9 @@
 <body>
 		<div id="wrapper">
 			<h1 id="header">Javascript is needed for this application to work, like, at all</h1>
-            <script type="text/javascript">
-                document.getElementById("header").innerHTML = room;
-            </script>
+			<script type="text/javascript">
+				document.getElementById("header").innerHTML = room;
+			</script>
 
 			<div id="chatlog"></div>
 
