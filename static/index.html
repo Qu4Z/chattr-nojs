@@ -25,11 +25,6 @@
 		:-ms-input-placeholder { color:#888; } /* ie */
 		input:-moz-placeholder { color:#888; }
 		
-		h1 {
-			font-weight: normal;
-			font-size: large;
-		}
-
 		#message {
 			width: 100%;
 		}
@@ -114,11 +109,6 @@
 	</head>
 <body>
 		<div id="wrapper">
-			<h1 id="header">Javascript is needed for this application to work, like, at all</h1>
-			<script type="text/javascript">
-				document.getElementById("header").innerHTML = room;
-			</script>
-
 			<div id="chatlog"></div>
 
 			<form onsubmit="sendMessage(); return false;">
