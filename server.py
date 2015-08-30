@@ -10,10 +10,13 @@ from collections import defaultdict
 from bottle import run, route, request, response, redirect, static_file
 
 latest_message_id = 0
+
 def create_message():
 	global latest_message_id
 	latest_message_id += 1
 	return { "msg": "", "colour": "", "event": Event(), "id": latest_message_id }
+
+queue = defaultdict(lambda: {"msgs": [create_message()], "last_msg_time": None, "current_colour": 0.2})
 
 def send_message(msg, colour, room):
 	queue[room]["msgs"].append(create_message())
@@ -24,18 +27,14 @@ def send_message(msg, colour, room):
 		queue[room]["msgs"].pop(0)
 	queue[room]["last_msg_time"] = datetime.datetime.now()
 
-queue = defaultdict(lambda: {"msgs": [create_message()], "last_msg_time": None})
-
 def purge_dead_rooms(every=43200, ttl=259200): #43200s = 12h, 259200s = 72h = 3d
 	for room in [room for room in queue if queue[room]["last_msg_time"] and queue[room]["last_msg_time"] < datetime.datetime.now() - datetime.timedelta(seconds=ttl)]:
 		del queue[room]
 	Timer(every, purge_dead_rooms).start()
 
-current_colour = 0.2
-def next_colour():
-	global current_colour
-	current_colour += 0.38194
-	rgb = colorsys.hsv_to_rgb(current_colour, 1, 0.85)
+def next_colour(room):
+	queue[room]["current_colour"] += 0.38194
+	rgb = colorsys.hsv_to_rgb(queue[room]["current_colour"], 1, 0.85)
 	return '#%02X%02X%02X' % tuple([ int(quant * 256) for quant in rgb ])
 
 @route('<file:re:^/(robots\\.txt|favicon\\.ico)$>')
@@ -54,18 +53,18 @@ def trailing_slashfix(room):
 def room_home(room):
 	return static_file('index.html', root='static/')
 
-def get_colour(req, resp):
+def get_colour(req, room, resp):
 	colour = req.cookies.get("Colour")
 	if not colour:
-		colour = next_colour()
-		resp.set_cookie("Colour", colour, path="/", httponly=True)
+		colour = next_colour(room)
+		resp.set_cookie("Colour", colour, httponly=True)
 	return colour
 
 @route("/<room>/room", method="POST")
 def pub(room):
 	message = request.params.get('message')
 	message = message[:1000] if message else ""
-	colour = get_colour(request, response)
+	colour = get_colour(request, room, response)
 	send_message(message, colour, room)
 	return "OK"
 
