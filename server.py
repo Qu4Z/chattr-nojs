@@ -43,7 +43,7 @@ def serve_static_routes(file):
 
 @route('/')
 def home():
-	redirect('/-/')
+	return static_file('index.html', root='static/')
 
 @route('/<room>')
 def trailing_slashfix(room):
@@ -51,7 +51,7 @@ def trailing_slashfix(room):
 
 @route('/<room>/')
 def room_home(room):
-	return static_file('index.html', root='static/')
+	return static_file('room.html', root='static/')
 
 def get_colour(req, room, resp):
 	colour = req.cookies.get("Colour")
