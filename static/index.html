@@ -17,7 +17,8 @@
 			var hostname = window.location.hostname;
 			function init() {
 				document.title = hostname;
-				document.getElementById("title").innerHTML = "Welcome to " + hostname;
+				var siteswap_elements = document.getElementsByClassName('siteswap');
+				for (var i = 0; i < siteswap_elements.length; i++) siteswap_elements[i].innerHTML = siteswap_elements[i].innerHTML.replace(/SITE/g, hostname);
 			}
 
 			function random_room() {
@@ -28,14 +29,30 @@
 <body>
 		<div id="wrapper">
 			<noscript>Javascript appears to be missing or blocked, this site really won't work without it sorry.</noscript>
-			<h1 id="title">Chat</h1>
+			<h1 class="siteswap">Welcome to SITE</h1>
+			<hr/>
 			<p>
-				Click <a href="./all">here</a> to go to the main room<br />
-				Click <a id="random" href="javascript:void(0)" onclick="random_room();">here</a> to get a random room!<br/>
-				Or go to any room you want by... well, work it out for now.
+				This is a barebones web chat client, with a focus on "minimum viable" design. Messages are interpreted as html, and you're free to do what you like.
 			</p>
-
-			<p>You can see the room you're in from the window/tab title, and to share your room, just give someone the url.</p>
+			<p>
+				Conversations take place in rooms. Roooms store the last few messages for up to 3 days of inactivity, after which the room is removed/regenerated.
+			</p>
+			<p class="siteswap">
+				Simply go to the room you'd like in the url bar, like so: SITE/all, SITE/room, SITE/...
+			</p>
+			<p>
+				Quick links:<br />
+				<a href="./all">Default Room</a><br />
+				<a id="random" href="javascript:void(0)" onclick="random_room();">Random Room</a>
+			</p>
+			<p>
+				Just share the room URL with the people you'd like to chat with.
+			</p>
+			<hr />
+			<p>
+				Check out the code (or fork) on github: <a href='https://github.com/philipkorsika/webchat'>https://github.com/philipkorsika/webchat</a>
+			</p>
+			</p>
 		</div>
 
 	<script type="text/javascript">init(); random_room();</script>
