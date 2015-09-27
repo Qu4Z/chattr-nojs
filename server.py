@@ -7,7 +7,7 @@ from gevent import monkey; monkey.patch_all()
 from threading import Event, Timer
 from collections import defaultdict
 
-from bottle import run, route, request, response, redirect, static_file
+from bottle import run, route, request, response, redirect, static_file, error
 
 latest_message_id = 0
 
@@ -40,6 +40,10 @@ def next_colour(room):
 @route('<file:re:^/(robots\\.txt|favicon\\.ico|style\\.css)$>')
 def serve_static_routes(file):
 	return static_file(file, root='static/')
+
+@error(404)
+def notfound404(error):
+    return static_file('404.html', root='static/')
 
 @route('/')
 def home():
