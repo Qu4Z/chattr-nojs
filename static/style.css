@@ -19,3 +19,8 @@ a {
     font-weight: bold;
     text-decoration: none;
 }
+
+.footer {
+    position: absolute;
+    bottom: 0;
+}
