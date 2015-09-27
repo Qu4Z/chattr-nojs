@@ -1,59 +1,43 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no">
-		<style>
-			body {
-				font: 80%/1.4 Verdana, Arial, Helvetica, sans-serif;
-				color: #f5f5f5;
-				background-color: #000;
-				margin: 15px;
-			}
-		</style>
-		
-		<title>Chat</title>
-		<script type="text/javascript">
-			var hostname = window.location.hostname;
-			function init() {
-				document.title = hostname;
-				var siteswap_elements = document.getElementsByClassName('siteswap');
-				for (var i = 0; i < siteswap_elements.length; i++) siteswap_elements[i].innerHTML = siteswap_elements[i].innerHTML.replace(/SITE/g, hostname);
-			}
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no">
+        <link rel="stylesheet" type="text/css" href="/style.css">
+        
+        <title>Chat</title>
+        <script type="text/javascript">
+            var hostname = window.location.hostname;
+            function init() {
+                document.title = hostname;
+                var siteswap_elements = document.getElementsByClassName('siteswap');
+                for (var i = 0; i < siteswap_elements.length; i++) siteswap_elements[i].innerHTML = siteswap_elements[i].innerHTML.replace(/SITE/g, hostname);
+            }
 
-			function random_room() {
-				document.getElementById("random").href = Math.random().toString(36).substring(2)
-			}
-		</script>
-	</head>
+            function random_room() {
+                document.getElementById("random").href = Math.random().toString(36).substring(2)
+            }
+        </script>
+    </head>
 <body>
-		<div id="wrapper">
-			<noscript>Javascript appears to be missing or blocked, this site really won't work without it sorry.</noscript>
-			<h1 class="siteswap">Welcome to SITE</h1>
-			<hr/>
-			<p>
-				This is a barebones web chat client, with a focus on "minimum viable" design. Messages are interpreted as html, and you're free to do what you like.
-			</p>
-			<p>
-				Conversations take place in rooms. Roooms store the last few messages for up to 3 days of inactivity, after which the room is removed/regenerated.
-			</p>
-			<p class="siteswap">
-				Simply go to the room you'd like in the url bar, like so: SITE/all, SITE/room, SITE/...
-			</p>
-			<p>
-				Quick links:<br />
-				<a href="./all">Default Room</a><br />
-				<a id="random" href="javascript:void(0)" onclick="random_room();">Random Room</a>
-			</p>
-			<p>
-				Just share the room URL with the people you'd like to chat with.
-			</p>
-			<hr />
-			<p>
-				Check out the code (or fork) on github: <a href='https://github.com/philipkorsika/webchat'>https://github.com/philipkorsika/webchat</a>
-			</p>
-			</p>
-		</div>
+        <div id="wrapper">
+            <noscript>Javascript appears to be missing or blocked, this site really won't work without it sorry.</noscript>
+            <h1 class="siteswap">SITE</h1>
+            <hr />
+            <p>A barebones chat client, focused on "minimum viable" design.</p>
+            <p class="siteswap">Simply go to the room you'd like in the url bar, like so: SITE/all, SITE/room, SITE/...</p>
+            <p>
+                Quick links:<br />
+                <a href="./all" target="_blank">Default Room</a><br />
+                <a id="random" href="javascript:void(0)" onclick="random_room();" target="_blank">Random Room</a>
+            </p>
+            <p>
+                Just share the room URL with the people you'd like to chat with.
+            </p>
+            <p style="position: absolute; bottom: 0; margin: 15px;">
+                Check out the code (or fork) on github: <a href='https://github.com/philipkorsika/webchat'>https://github.com/philipkorsika/webchat</a>
+            </p>
+        </div>
 
-	<script type="text/javascript">init(); random_room();</script>
+    <script type="text/javascript">init(); random_room();</script>
 </body></html>

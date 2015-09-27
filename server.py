@@ -37,7 +37,7 @@ def next_colour(room):
 	rgb = colorsys.hsv_to_rgb(queue[room]["current_colour"], 1, 0.85)
 	return '#%02X%02X%02X' % tuple([ int(quant * 256) for quant in rgb ])
 
-@route('<file:re:^/(robots\\.txt|favicon\\.ico)$>')
+@route('<file:re:^/(robots\\.txt|favicon\\.ico|style\\.css)$>')
 def serve_static_routes(file):
 	return static_file(file, root='static/')
 

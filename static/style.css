@@ -1,0 +1,21 @@
+body {
+    font: 100%/1.4 Monospace;
+    color: #f2f2f2;
+    background-color: #000;
+    margin: 15px;
+}
+
+h1 {
+    font-size:15px;
+}
+
+hr {
+    border: 0;
+    border-bottom: 1px dashed #ccc;
+}
+
+a {
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+}
