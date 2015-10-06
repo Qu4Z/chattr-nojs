@@ -1,6 +1,10 @@
-# webchat
+webchat
+=======
+
 minimalistic web chat
 
-## Requires
-bottle.py
-gevent
+Requires
+--------
+
+ - bottle.py
+ - gevent
