@@ -15,7 +15,7 @@
             }
 
             function random_room() {
-                document.getElementById("random").href = Math.random().toString(36).substring(2)
+                document.getElementById("random").href = "r/" + Math.random().toString(36).substring(2);
             }
         </script>
     </head>
@@ -28,7 +28,7 @@
             <p class="siteswap">Simply go to the room you'd like in the url bar, like so: SITE/all, SITE/room, SITE/...</p>
             <p>
                 Quick links:<br />
-                <a href="./all" target="_blank">Default Room</a><br />
+                <a href="./r/all" target="_blank">Default Room</a><br />
                 <a id="random" href="javascript:void(0)" onclick="random_room();" target="_blank">Random Room</a>
             </p>
             <p>

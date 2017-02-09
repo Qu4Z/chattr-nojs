@@ -36,17 +36,22 @@ def serve_static_routes(file):
 
 @error(404)
 def notfound404(error):
-    return static_file('404.html', root='static/')
+	return static_file('404.html', root='static/')
 
 @route('/')
 def home():
 	return static_file('index.html', root='static/')
 
-@route('/<room>')
-def trailing_slashfix(room):
-	redirect("/{}/".format(room))
+@route('/s/<file:path>')
+def serve_static_resources(file):
+	return static_file(file, root='static/client/')
 
-@route('/<room>/')
+@route('/<room>')
+@route('/r/<room>')
+def canonicalise_room_url(room):
+	redirect("/r/{}/".format(room), 301)
+
+@route('/r/<room>/')
 def room_home(room):
 	return static_file('room.html', root='static/')
 
@@ -57,7 +62,7 @@ def get_colour(req, room, resp):
 		resp.set_cookie("Colour", colour, httponly=True)
 	return colour
 
-@route("/<room>/room", method="POST")
+@route("/r/<room>/room", method="POST")
 def pub(room):
 	message = request.params.get('message')
 	message = message[:1000] if message else ""
@@ -71,7 +76,7 @@ def format_message(msg):
 def all_messages_since(when, room):
 	return {"msgs": [format_message(msg) for msg in queue[room]["msgs"] if msg["id"] > when]}
 
-@route("/<room>/room")
+@route("/r/<room>/room")
 def sub(room):
 	try:
 		lastReceivedMessage = int(request.query['since'])
