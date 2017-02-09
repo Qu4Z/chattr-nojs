@@ -2,7 +2,7 @@
 
 import colorsys
 import random
-import datetime
+from datetime import datetime, timedelta
 from gevent import monkey; monkey.patch_all()
 from threading import Event, Timer
 from collections import defaultdict
@@ -25,10 +25,10 @@ def send_message(msg, colour, room):
 	queue[room]["msgs"][-2]["event"].set()
 	if (len(queue[room]["msgs"]) > 20):
 		queue[room]["msgs"].pop(0)
-	queue[room]["last_msg_time"] = datetime.datetime.now()
+	queue[room]["last_msg_time"] = datetime.now()
 
 def purge_dead_rooms(every=43200, ttl=259200): #43200s = 12h, 259200s = 72h = 3d
-	for room in [room for room in queue if queue[room]["last_msg_time"] and queue[room]["last_msg_time"] < datetime.datetime.now() - datetime.timedelta(seconds=ttl)]:
+	for room in [room for room in queue if queue[room]["last_msg_time"] and queue[room]["last_msg_time"] < datetime.now() - timedelta(seconds=ttl)]:
 		del queue[room]
 	Timer(every, purge_dead_rooms).start()
 
