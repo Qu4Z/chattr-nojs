@@ -15,8 +15,10 @@ hr {
 }
 
 a {
-    color: white;
+    color: inherit;
     font-weight: bold;
+}
+a:hover {
     text-decoration: none;
 }
 
