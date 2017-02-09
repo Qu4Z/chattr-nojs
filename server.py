@@ -16,7 +16,7 @@ def create_message():
 	latest_message_id += 1
 	return { "msg": "", "colour": "", "event": Event(), "id": latest_message_id }
 
-queue = defaultdict(lambda: {"msgs": [create_message()], "last_msg_time": None, "current_colour": 0.2})
+queue = defaultdict(lambda: {"msgs": [create_message()], "last_msg_time": datetime.now(), "current_colour": 0.2})
 
 def send_message(msg, colour, room):
 	queue[room]["msgs"].append(create_message())
@@ -28,7 +28,7 @@ def send_message(msg, colour, room):
 	queue[room]["last_msg_time"] = datetime.now()
 
 def purge_dead_rooms(every=43200, ttl=259200): #43200s = 12h, 259200s = 72h = 3d
-	for room in [room for room in queue if queue[room]["last_msg_time"] and queue[room]["last_msg_time"] < datetime.now() - timedelta(seconds=ttl)]:
+	for room in [room for room in queue if queue[room]["last_msg_time"] < datetime.now() - timedelta(seconds=ttl)]:
 		del queue[room]
 	Timer(every, purge_dead_rooms).start()
 
