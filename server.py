@@ -9,20 +9,13 @@ from collections import defaultdict
 
 from bottle import run, route, request, response, redirect, static_file, error
 
-latest_message_id = 0
-
-def create_message():
-	global latest_message_id
-	latest_message_id += 1
-	return { "msg": "", "colour": "", "event": Event(), "id": latest_message_id }
-
-queue = defaultdict(lambda: {"msgs": [create_message()], "last_msg_time": datetime.now(), "current_colour": 0.2})
+queue = defaultdict(lambda: {"msgs": [], "last_msg_time": datetime.now(), "current_colour": 0.2, "last_msg_id": 0, "event": Event()})
 
 def send_message(msg, colour, room):
-	queue[room]["msgs"].append(create_message())
-	queue[room]["msgs"][-2]["msg"] = msg
-	queue[room]["msgs"][-2]["colour"] = colour
-	queue[room]["msgs"][-2]["event"].set()
+	queue[room]["last_msg_id"] += 1
+	queue[room]["msgs"].append({"msg": msg, "colour": colour, "id": queue[room]["last_msg_id"]})
+	queue[room]["event"].set()
+	queue[room]["event"] = Event()
 	if (len(queue[room]["msgs"]) > 20):
 		queue[room]["msgs"].pop(0)
 	queue[room]["last_msg_time"] = datetime.now()
@@ -76,7 +69,7 @@ def format_message(msg):
 	return {"msg": msg["msg"], "colour": msg["colour"], "id": msg["id"]}
 
 def all_messages_since(when, room):
-	return {"msgs": [format_message(msg) for msg in queue[room]["msgs"][:-1] if msg["id"] > when]}
+	return {"msgs": [format_message(msg) for msg in queue[room]["msgs"] if msg["id"] > when]}
 
 @route("/<room>/room")
 def sub(room):
@@ -86,11 +79,10 @@ def sub(room):
 		lastReceivedMessage = None
 	response.add_header("Cache-Control", "public, max-age=0, no-cache")
 
-	the_msg = queue[room]["msgs"][-1]
-	if not lastReceivedMessage or the_msg["id"] - 1 != lastReceivedMessage:
+	if not lastReceivedMessage or queue[room]["last_msg_id"] > lastReceivedMessage:
 		if len(queue[room]["msgs"]) > 1: return all_messages_since(lastReceivedMessage, room)
-	if the_msg["event"].wait(25):
-		return {"msgs":[format_message(the_msg)]}
+	if queue[room]["event"].wait(25):
+		return {"msgs":[format_message(queue[room]["msgs"][-1])]}
 	return {"msgs":[]}
 
 if __name__ == "__main__":
