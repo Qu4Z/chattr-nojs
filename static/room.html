@@ -49,12 +49,10 @@
 				if (result.hasOwnProperty("msgs")) {
 					result = result["msgs"];
 				}
-				for (var i = 0; i < result.length; i++) {
-					var msg = result[i];
+				for (var msg of result) {
 					latestReceivedMessage = msg.id;
-					message_filters.forEach(function(func) {
+					for (var func of message_filters) 
 						msg = func(msg);
-					});
 					addMessage(msg.colour, msg.msg);
 				}
 
