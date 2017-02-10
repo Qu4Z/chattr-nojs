@@ -33,7 +33,7 @@
 
 	<title>Chat</title>
 	<script type="text/javascript">
-		var room = window.location.pathname.split('/')[1] + "@" + window.location.hostname;
+		var room = window.location.pathname.split('/').reverse()[1] + "@" + window.location.hostname;
 		var latestReceivedMessage = 0; 
 
 		function getMessage() {
