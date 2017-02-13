@@ -1,12 +1,10 @@
 #!/usr/bin/env python2
-
 import colorsys
 import random
 from datetime import datetime, timedelta
 from gevent import monkey; monkey.patch_all()
 from threading import Event, Timer
 from collections import defaultdict
-
 from bottle import run, route, request, response, redirect, static_file, error
 
 queue = defaultdict(lambda: {"msgs": [], "last_msg_time": datetime.now(), "current_colour": 0.2, "last_msg_id": 0, "event": Event()})
@@ -47,6 +45,7 @@ def serve_static_resources(file):
 	return static_file(file, root='static/client/')
 
 @route('/<room>')
+@route('/<room>/')
 @route('/r/<room>')
 def canonicalise_room_url(room):
 	redirect("/r/{}/".format(room), 301)
