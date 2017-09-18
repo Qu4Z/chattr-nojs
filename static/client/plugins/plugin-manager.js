@@ -148,6 +148,10 @@
     ' #plugin_manager.hidden ul {' +
     '   display: none;' +
     ' }' +
+    ' #plugin_manager ul {' +
+    '   list-style: none;' +
+    '   padding: 0 5px;' +
+    ' }' +
     ' #plugin_manager li.active input[type="button"] {' +
     '   display: none;' +
     ' }' +
