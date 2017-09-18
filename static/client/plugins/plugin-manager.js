@@ -40,7 +40,8 @@
   manager.id = 'plugin_manager';
 
   var title = manager.appendChild(document.createElement('p'));
-  title.appendChild(document.createTextNode('Plugin Manager'));
+  var title_span = title.appendChild(document.createElement('span'));
+  title_span.appendChild(document.createTextNode('Plugin Manager'));
   var openclose = title.appendChild(document.createElement('input'));
   openclose.type = 'button';
   title.addEventListener('click', function() {
@@ -126,14 +127,23 @@
   var css = document.createElement('style');
   css.type = 'text/css';
   css.appendChild(document.createTextNode(
-    ' #plugin_manager {' +
+    ' #plugin_manager, #plugin_manager.hidden:hover {' +
     '   border: #888 1px solid;' +
     '   float: right;' +
     '   padding: 0 0.5em;' +
     ' }' +
+    ' #plugin_manager.hidden {' +
+    '   border: none;' +
+    ' }' +
     ' #plugin_manager p, #plugin_manager p input {' +
     '   cursor: pointer;' +
     '   text-align: right;' +
+    ' }' +
+    ' #plugin_manager.hidden span {' +
+    '     display: none;' +
+    ' }' +
+    ' #plugin_manager.hidden:hover span {' +
+    '     display: inline;' +
     ' }' +
     ' #plugin_manager.hidden ul {' +
     '   display: none;' +
