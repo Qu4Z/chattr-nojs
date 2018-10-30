@@ -25,7 +25,7 @@ def purge_dead_rooms(every=43200, ttl=259200): #43200s = 12h, 259200s = 72h = 3d
 
 def next_colour(room):
 	queue[room]["current_colour"] += 0.38194 * (1 + int(random.random() * 3))
-	rgb = colorsys.hsv_to_rgb(queue[room]["current_colour"], 1, 0.85)
+	rgb = colorsys.hls_to_rgb(queue[room]["current_colour"], 0.80, 1)
 	return '#%02X%02X%02X' % tuple([ int(quant * 256) for quant in rgb ])
 
 @route('<file:re:^/(robots\\.txt|favicon\\.ico|style\\.css)$>')
