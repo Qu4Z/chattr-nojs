@@ -39,6 +39,7 @@
         function getMessage() {
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.open("GET", "room?since=" + latestReceivedMessage, true);
+            xmlhttp.onerror = function() { setTimeout(getMessage, 15 * 1000); }
             xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState != 4)
                     return;
@@ -116,7 +117,7 @@
     </head>
     <body>
         <div id="wrapper">
-            <noscript>Javascript appears to be missing or blocked, this site really won't work without it sorry.</noscript>
+            <noscript>Javascript appears to be missing or blocked; this site really won't work without it sorry.</noscript>
     
             <div id="chatlog"></div>
             <form onsubmit="sendMessage(); return false;">
