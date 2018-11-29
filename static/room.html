@@ -31,7 +31,6 @@
     </style>
 
 
-    <title>Chat</title>
     <script type="text/javascript">
         var room = window.location.pathname.split('/').reverse()[1] + "@" + window.location.hostname;
         var latestReceivedMessage = 0; 
@@ -100,7 +99,6 @@
                 document.title = room;
         });
 
-        JSON.parse(localStorage.getItem('plugins') || '[]').forEach(load_plugin);
         function load_plugin(url) {
             var s = document.createElement('script');
             s.async = s.defer = false;
@@ -111,6 +109,7 @@
 
         window.addEventListener('load', function() {
             document.title = room;
+            JSON.parse(localStorage.getItem('plugins') || '[]').forEach(load_plugin);
             getMessage();
         });
     </script>

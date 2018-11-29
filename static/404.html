@@ -5,28 +5,17 @@
         <meta name="viewport" content="width=device-width, user-scalable=no">
         <link rel="stylesheet" type="text/css" href="/style.css">
         
-        <title>Chat</title>
-        <script type="text/javascript">
-            var hostname = window.location.hostname;
-            function init() {
-                document.title = hostname + ": oops...";
-                var siteswap_elements = document.getElementsByClassName('siteswap');
-                for (var i = 0; i < siteswap_elements.length; i++) siteswap_elements[i].innerHTML = siteswap_elements[i].innerHTML.replace(/SITE/g, hostname);
-            }
-        </script>
+        <title>Chat - Oops</title>
     </head>
     <body>
         <div id="wrapper">
-            <noscript>Javascript appears to be missing or blocked, this site really won't work without it sorry.</noscript>
-            <h1 class="siteswap">SITE: Oops, this isn't a place that exists! (404)</h1>
+            <h1>Oops, this isn't a place that exists! (404)</h1>
             <hr />
-            <p>You appear to have gotten a bit lost, there's really nothing interesting to see here sorry.</p>
+            <p>You appear to have gotten a bit lost; there's really nothing interesting to see here sorry.</p>
 
             <p class="footer">
                 Check out the code (or fork) on github: <a href='https://github.com/philipkorsika/webchat'>https://github.com/philipkorsika/webchat</a>
             </p>
         </div>
-
-        <script type="text/javascript">init(); random_room();</script>
     </body>
 </html>
