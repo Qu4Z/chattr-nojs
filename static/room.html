@@ -44,6 +44,11 @@
 				if (xmlhttp.readyState != 4)
 					return;
 
+				if (xmlhttp.status != 200) {
+					setTimeout(getMessage, 15 * 1000);
+					return;
+				}
+
 				var result = JSON.parse(xmlhttp.responseText);
 				// Needed because returning a raw array is bad, apparently.
 				if (result.hasOwnProperty("msgs")) {
@@ -56,11 +61,7 @@
 					addMessage(msg.colour, msg.msg);
 				}
 
-				if (xmlhttp.status == 200)
-					getMessage();
-				else 
-					setTimeout(getMessage, 15 * 1000);
-
+				getMessage();
 			}
 			xmlhttp.send();
 		}
