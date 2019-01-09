@@ -37,28 +37,18 @@
         function getMessage() {
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.addEventListener("loadend", function() {
-                if (xmlhttp.status != 200) {
-                    setTimeout(getMessage, 15 * 1000);
+                setTimeout(getMessage, xmlhttp.status != 200 ? 15 * 1000 : 0);
+                if (xmlhttp.status != 200) 
                     return;
-                }
 
-                try {
-                  var result = JSON.parse(xmlhttp.responseText);
-                  // Needed because returning a raw array is bad, apparently.
-                  if (result.hasOwnProperty("msgs")) {
-                      result = result["msgs"];
-                  }
-                  for (var msg of result) {
-                      latestReceivedMessage = msg.id;
-                      for (var func of message_filters) 
-                          msg = func(msg);
-                      addMessage(msg.colour, msg.msg);
-                  }
-                } catch (e) {
-                    console.log(e);
+                var result = JSON.parse(xmlhttp.responseText);
+                // JSON.parse expects an object at the root, so we just put our array in the "msgs" key.
+                for (var msg of result["msgs"]) {
+                    latestReceivedMessage = msg.id;
+                    for (var func of message_filters) 
+                        msg = func(msg);
+                    addMessage(msg.colour, msg.msg);
                 }
-  
-                getMessage();
             });
             xmlhttp.open("GET", "room?since=" + latestReceivedMessage, true);
             xmlhttp.send();
