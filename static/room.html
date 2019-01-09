@@ -18,10 +18,6 @@
         :-ms-input-placeholder { color:#888; } /* ie */
         input::placeholder { color:#888; }
 
-        #message {
-            width: 100%;
-        }
-
         pre {
             font-size: 1.4em;
             margin: 0px auto;
@@ -58,9 +54,8 @@
             var msgBox = document.getElementById("message");
             var msg = msgBox.value;
             msgBox.value = "";
-            if (msg == "") {
+            if (msg == "")
                 return false;
-            }
 
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.open("POST", "room", true);
@@ -109,7 +104,7 @@
     
             <div id="chatlog"></div>
             <form onsubmit="sendMessage(); return false;">
-                <input id="message" type="text" name="message" placeholder="Send a message..." autocomplete="off" autofocus>
+                <input id="message" type="text" name="message" placeholder="Send a message..." autocomplete="off" style="width: 100%;" autofocus>
                 <input id="sendBtn" type="submit" name="send" value="send" style="display:none;">
             </form>
         </div>
