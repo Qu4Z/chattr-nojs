@@ -66,7 +66,7 @@ def room_home(room):
                 yield " "
 
 def msgtohtml(msg):
-    return '<div style="color:' + msg["colour"] + '">' + msg["msg"] + '</div>'
+    return '<div style="color:' + msg["colour"] + '">' + msg["msg"] + '</div>\n'
 
 def get_colour(req, room, resp):
 	colour = req.cookies.get("Colour")
