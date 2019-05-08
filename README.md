@@ -1,9 +1,11 @@
-webchat
-=======
+chattr
+======
 
-minimalistic web chat built with:
- - bottle.py
- - gevent
+A fork of https://github.com/philipkorsika/chattr
+
+This version removes the need for JavaScript! 
+
+(note that it still uses CSS for aesthetics, but it's not necessary for the functionality, and would work without it)
 
 Install
 -------
