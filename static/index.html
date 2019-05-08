@@ -4,47 +4,17 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, user-scalable=no">
         <link rel="stylesheet" type="text/css" href="/style.css">
-        <script type="text/javascript">
-            var hostname = window.location.hostname;
-            var plugin_manager_url = '../../s/plugins/plugin-manager.js';
-
-            window.addEventListener('load', function() {
-                document.title = hostname;
-                var siteswap_elements = document.getElementsByClassName('siteswap');
-                for (var i = 0; i < siteswap_elements.length; i++) siteswap_elements[i].innerHTML = siteswap_elements[i].innerHTML.replace(/SITE/g, hostname);
-                pm_label(document.getElementById('pm'));
-            });
-
-            function random_room() {
-                document.getElementById("random").href = "r/" + Math.random().toString(36).substring(2);
-            }
-
-            function pm_toggle(that) {
-                var plugins = JSON.parse(localStorage.getItem('plugins') || '[]');
-                if (plugins.length) {
-                    localStorage.removeItem('plugins');
-                } else {
-                    localStorage.setItem('plugins', JSON.stringify([plugin_manager_url]));
-                }
-                pm_label(that);
-            }
-            function pm_label(that) {
-                var plugins = JSON.parse(localStorage.getItem('plugins') || '[]');
-                that.value = plugins.length ? 'Disable plugin system' : 'Enable plugin system';
-            }
-        </script>
     </head>
     <body>
         <div id="wrapper">
             <noscript>Javascript appears to be missing or blocked, this site really won't work without it sorry.</noscript>
-            <h1 class="siteswap">SITE</h1>
+            <h1 class="siteswap">chattr</h1>
             <hr />
             <p>A barebones chat client, focused on "minimum viable" design.</p>
             <p class="siteswap">Simply go to the room you'd like in the url bar, like so: SITE/r/all, SITE/r/room, SITE/r/...</p>
             <p>
                 Quick links:<br />
                 <a href="./r/all" target="_blank">Default Room</a><br />
-                <a id="random" href="javascript:void(0)" onclick="random_room();" target="_blank">Random Room</a>
             </p>
             <p>
                 Just share the room URL with the people you'd like to chat with.
