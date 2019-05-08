@@ -52,7 +52,21 @@ def canonicalise_room_url(room):
 
 @route('/r/<room>/')
 def room_home(room):
-	return static_file('room.html', root='static/')
+        html = ""
+        with open('static/room.html', 'r') as htmlfile:
+            html = htmlfile.read()
+	yield html
+
+        last_message = 0
+        while True:
+            for msg in all_messages_since(last_message, room):
+                yield msgtohtml(msg)
+            last_message = queue[room]["last_msg_id"]
+            if not queue[room]["event"].wait(25):
+                yield " "
+
+def msgtohtml(msg):
+    return '<div style="color:' + msg["colour"] + '">' + msg["msg"] + '</div>'
 
 def get_colour(req, room, resp):
 	colour = req.cookies.get("Colour")
@@ -67,13 +81,13 @@ def pub(room):
 	message = message[:1000] if message else ""
 	colour = get_colour(request, room, response)
 	send_message(message, colour, room)
-	return "OK"
+	redirect("/r/{}/chatbox".format(room), 302)
 
 def format_message(msg):
 	return {"msg": msg["msg"], "colour": msg["colour"], "id": msg["id"]}
 
 def all_messages_since(when, room):
-	return {"msgs": [format_message(msg) for msg in queue[room]["msgs"] if msg["id"] > when]}
+	return [format_message(msg) for msg in queue[room]["msgs"] if msg["id"] > when]
 
 @route("/r/<room>/room")
 def sub(room):
@@ -88,6 +102,10 @@ def sub(room):
 	if queue[room]["event"].wait(25):
 		return {"msgs":[format_message(queue[room]["msgs"][-1])]}
 	return {"msgs":[]}
+
+@route("/r/<room>/chatbox")
+def chatbox(room):
+    return static_file('chatbox.html', root='static/')
 
 if __name__ == "__main__":
 	purge_dead_rooms()
